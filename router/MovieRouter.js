@@ -1,27 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const movies = require('../model/MovieModel');
+const muzics = require('../model/muzicModel');
 
-router.get('/movies', showMovieList);
-router.get('/movies/:movieId', showMovieDetail);
-router.post('/movies', addMovie);
+router.get('/muzics', showMuzicList);
+router.get('/muzics/:muzicId', showMuzicDetail);
+router.post('/muzics', addMuzic);
 
 module.exports = router;
 
-function showMovieList(req, res) {
-    const movieList = movies.getMovieList();
-    const result = { data:movieList, count:movieList.length };
+function showMuzicList(req, res) {
+    const muzicList = muzics.getMuzicList();
+    const result = { data:muzicList, count:muzicList.length };
     res.send(result);
 }
 
 
 // Async-await를 이용하기
-async function showMovieDetail(req, res) {
+async function showMuzicDetail(req, res) {
     try {
         // 영화 상세 정보 Id
-        const movieId = req.params.movieId;
-        console.log('movieId : ', movieId);
-        const info = await movies.getMovieDetail(movieId);
+        const muzicId = req.params.muzicId;
+        console.log('muzicId : ', muzicId);
+        const info = await muzics.getmuzicDetail(muzicId);
         res.send(info);
     }
     catch ( error ) {
@@ -30,10 +30,7 @@ async function showMovieDetail(req, res) {
     }
 }
 
-
-// 새 영화 추가
-// POST 요청 분석 -> 바디 파서
-async function addMovie(req, res) {
+async function addMuzic(req, res) {
     const title = req.body.title;
 
     if (!title) {
@@ -41,12 +38,11 @@ async function addMovie(req, res) {
         return;
     }
 
-    const director = req.body.director;
+    const sinnger = req.body.sinnger;
     const year = parseInt(req.body.year);
-    const synopsis = req.body.synopsis;
 
     try {
-        const result = await movies.addMovie(title, director, year, synopsis);
+        const result = await muzics.addMuzic(title, sinnger, year);
         res.send({msg:'success', data:result});
     }
     catch ( error ) {
