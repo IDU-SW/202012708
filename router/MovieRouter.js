@@ -5,6 +5,8 @@ const muzics = require('../model/muzicModel');
 router.get('/muzics', showMuzicList);
 router.get('/muzics/:muzicId', showMuzicDetail);
 router.post('/muzics', addMuzic);
+router.put('/muzics/:muzicId', updateMuzic);
+router.delete('/muzics/:muzicId', deleteMuzic);
 
 module.exports = router;
 
@@ -43,6 +45,31 @@ async function addMuzic(req, res) {
 
     try {
         const result = await muzics.addMuzic(title, sinnger, year);
+        res.send({msg:'success', data:result});
+    }
+    catch ( error ) {
+        res.status(500).send(error.msg);
+    }
+}
+
+async function updateMuzic(req, res) {
+    const id = req.params.muzicId;
+    const title = req.body.title;
+    const sinnger = req.body.sinnger;
+    const year = parseInt(req.body.year);
+    try {
+        const result = await muzics.updateMuzic(id, title, sinnger, year);
+        res.send({msg:'success', data:result});
+    }
+    catch ( error ) {
+        res.status(500).send(error.msg);
+    }
+}
+
+async function deleteMuzic(req, res) {
+    const id = req.params.muzicId;
+    try {
+        const result = await muzics.deleteMuzic(id);
         res.send({msg:'success', data:result});
     }
     catch ( error ) {

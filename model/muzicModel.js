@@ -28,6 +28,28 @@ class Muzic {
         });
     }
 
+    updateMuzic(id, title, sinnger, year) {
+        return new Promise((resolve, reject) => {
+            for (let muzic of this.muzic ) {
+                muzic.id = id;
+                muzic.title = title;
+                muzic.sinnger = sinnger;
+                muzic.year = year
+            }
+            let updateMuzic = {muzic};
+            this.muzic.push(updateMuzic);
+
+            resolve(updateMuzic);
+        });
+    }
+
+    deleteMuzic(id) {
+        return new Promise((resolve, reject) => {
+            this.muzic.splice(id,1);
+            resolve(muzic);    
+        });
+    }
+
     // Promise - Reject
     getmuzicDetail(muzicId) {
         return new Promise((resolve, reject) => {
