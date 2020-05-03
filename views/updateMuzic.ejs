@@ -1,0 +1,19 @@
+<html>
+<head>
+   <meta charset="UTF-8" />
+</head>
+<body>
+    <h1><%= info.title %> 수정하기</h1> 
+    <form action="/muzics/edit" method="post" >
+        <input type="hidden" name="id" value="<%= info.id %>">
+<pre>
+    제목  : <input type="text" name="title" value="<%= info.title %>" ></br>
+    가수  : <input type="text" name="sinnger" value="<%= info.sinnger %>" ></br>
+    발매일: <input type="text" name="year" value="<%= info.year %>" ></br>
+<p>
+<input type="submit" value="수정">  <input type="button" value="돌아가기" onclick="history.back(-1)">
+</p>
+</pre>
+    </form> 
+</body>
+</html>

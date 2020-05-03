@@ -30,16 +30,16 @@ class Muzic {
 
     updateMuzic(id, title, sinnger, year) {
         return new Promise((resolve, reject) => {
-            for (let muzic of this.muzic ) {
-                muzic.id = id;
-                muzic.title = title;
-                muzic.sinnger = sinnger;
-                muzic.year = year
+            console.log("에러");
+            let updateMuzic = {id, title, sinnger, year};
+            for (var muzic of this.muzic ) {
+                if ( muzic.id == id ) {
+                    this.muzic.splice(id, 1, updateMuzic); // 
+                    resolve(updateMuzic);
+                    console.log(updateMuzic);
+                    return;
+                }
             }
-            let updateMuzic = {muzic};
-            this.muzic.push(updateMuzic);
-
-            resolve(updateMuzic);
         });
     }
 

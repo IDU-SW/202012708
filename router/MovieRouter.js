@@ -5,7 +5,11 @@ const muzics = require('../model/muzicModel');
 router.get('/muzics', showMuzicList);
 router.get('/muzics/:muzicId', showMuzicDetail);
 router.post('/muzics', addMuzic);
-router.put('/muzics/:muzicId', updateMuzic);
+router.get('/muzicAdd', function(req, res, next) {
+    res.render('../views/muzicAdd');
+  });
+router.get('/muzic/:muzicId', showMuzicDetail1);
+router.post('/muzics/edit', updateMuzic);
 router.delete('/muzics/:muzicId', deleteMuzic);
 
 module.exports = router;
@@ -13,7 +17,8 @@ module.exports = router;
 function showMuzicList(req, res) {
     const muzicList = muzics.getMuzicList();
     const result = { data:muzicList, count:muzicList.length };
-    res.send(result);
+
+    res.render('../views/muzicList',{data:muzicList});
 }
 
 
@@ -24,7 +29,23 @@ async function showMuzicDetail(req, res) {
         const muzicId = req.params.muzicId;
         console.log('muzicId : ', muzicId);
         const info = await muzics.getmuzicDetail(muzicId);
-        res.send(info);
+        console.log(info);
+        res.render('../views/muzicDetail',{info:info});
+    }
+    catch ( error ) {
+        console.log('Can not find, 404');
+        res.status(error.code).send({msg:error.msg});
+    }
+}
+
+async function showMuzicDetail1(req, res) {
+    try {
+        // 영화 상세 정보 Id
+        const muzicId = req.params.muzicId;
+        console.log('muzicId : ', muzicId);
+        const info = await muzics.getmuzicDetail(muzicId);
+        console.log(info);
+        res.render('../views/updateMuzic',{info:info});
     }
     catch ( error ) {
         console.log('Can not find, 404');
@@ -45,7 +66,8 @@ async function addMuzic(req, res) {
 
     try {
         const result = await muzics.addMuzic(title, sinnger, year);
-        res.send({msg:'success', data:result});
+        const muzicList = muzics.getMuzicList();
+        res.render('../views/muzicList',{data:muzicList});
     }
     catch ( error ) {
         res.status(500).send(error.msg);
@@ -53,13 +75,15 @@ async function addMuzic(req, res) {
 }
 
 async function updateMuzic(req, res) {
-    const id = req.params.muzicId;
+    const id = req.body.id;
     const title = req.body.title;
     const sinnger = req.body.sinnger;
     const year = parseInt(req.body.year);
+    console.log(id, title, sinnger, year);
     try {
         const result = await muzics.updateMuzic(id, title, sinnger, year);
-        res.send({msg:'success', data:result});
+        console.log(result);
+        res.render('../views/updateComplete',{data:result});
     }
     catch ( error ) {
         res.status(500).send(error.msg);
