@@ -18,6 +18,8 @@
   "homepage": "https://github.com/IDU-SW/202012708#readme",
   "dependencies": {
     "ejs": "^3.1.2",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mysql2": "^2.1.0",
+    "query": "^0.2.0"
   }
 }

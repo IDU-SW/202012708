@@ -5,7 +5,7 @@
 </head>
 <body>
     <% for(var i=0; i< data.length; i++){%>
-    <h1><a href='/muzics/<%= data[i].id %>'><%= data[i].id %></a></h1>
+    <h1><a href='/muzicDetail?idx=<%= data[i].id %>'><%= data[i].id %></a></h1>
     <h1><%= data[i].title %></h1>
     <h1><%= data[i].sinnger %></h1>
     <h1><%= data[i].year %></h1>

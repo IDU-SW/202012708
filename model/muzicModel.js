@@ -1,67 +1,116 @@
 const fs = require('fs');
+const pool = require('../lib/mySql');
 
-class Muzic {
-    constructor() {
-        const data = fs.readFileSync('./model/data.json');
-        this.muzic = JSON.parse(data)
-    }
+class Muzic {}
 
     // Promise 예제
-    getMuzicList() {
-        if (this.muzic) {
-            return this.muzic;
+async function getMuzicList(req, res) {
+
+    let sql = 'select * from music';
+
+    const connection = await pool.getConnection(async conn => conn);
+    try {
+      [results] = await connection.query(sql);
+
+      res.render('../views/muzicList', {data: results });
+    } catch(e) {
+      console.error(e);
+    } finally {
+      connection.release();
+    }
+  }
+
+    async function addMuzic(req, res) {
+        let title = req.body.title;
+        let sinnger = req.body.sinnger;
+        let year = req.body.year;
+        let sql = 'insert into music (title, sinnger, year) values (?,?,?)';
+
+        const connection = await pool.getConnection(async conn => conn);
+        try {
+        [results] = await connection.query(sql, [title, sinnger, year]);
+
+        } catch(e) {
+        console.error(e);
+        } finally {
+        connection.release();
         }
-        else {
-            return [];
+        res.redirect('/muzics');
+    }
+
+    async function updateMuzic(req, res) {
+        let id = req.body.id;
+        let title = req.body.title;
+        let sinnger = req.body.sinnger;
+        let year = req.body.year;
+
+        let sql = 'update music set title = ?, sinnger = ?, year = ? where id = ?';
+
+        const connection = await pool.getConnection(async conn => conn);
+        try {
+            [results] = await connection.query(sql, [title, sinnger, year, id]);
+            res.render('../views/updateComplete', {data: results });
+        } catch(e) {
+            console.error(e);
+        } finally {
+            connection.release();
         }
     }
 
-    addMuzic(title, singger, year) {
-        return new Promise((resolve, reject) => {
-            let last = this.muzic[this.muzic.length - 1];
-            let id = last.id + 1;
+    async function updateDetailMuzic(req, res) {
+        let idx = req.query.idx;
+        let sql = 'select * from music where id = ?';
 
-            let newMuzic = {id, title, singger, year};
-            this.muzic.push(newMuzic);
-
-            resolve(newMuzic);
-        });
+        const connection = await pool.getConnection(async conn => conn);
+        try {
+        [results] = await connection.query(sql, [idx]);
+        res.render('../views/updateMuzic', {info: results[0] });
+        } catch(e) {
+        console.error(e);
+        } finally {
+        connection.release();
+        }
     }
 
-    updateMuzic(id, title, sinnger, year) {
-        return new Promise((resolve, reject) => {
-            console.log("에러");
-            let updateMuzic = {id, title, sinnger, year};
-            for (var muzic of this.muzic ) {
-                if ( muzic.id == id ) {
-                    this.muzic.splice(id, 1, updateMuzic); // 
-                    resolve(updateMuzic);
-                    console.log(updateMuzic);
-                    return;
-                }
-            }
-        });
-    }
+    async function deleteMuzic(req, res) {
+        let idx = req.query.idx;
+        let sql = 'delete from music where id = ?';
 
-    deleteMuzic(id) {
-        return new Promise((resolve, reject) => {
-            this.muzic.splice(id,1);
-            resolve(muzic);    
-        });
+        const connection = await pool.getConnection(async conn => conn);
+        try {
+        [results] = await connection.query(sql, [idx]);
+
+
+        } catch(e) {
+        console.error(e);
+        } finally {
+        connection.release();
+        }
+        res.redirect('/muzics');
     }
 
     // Promise - Reject
-    getmuzicDetail(muzicId) {
-        return new Promise((resolve, reject) => {
-            for (let muzic of this.muzic ) {
-                if ( muzic.id == muzicId ) {
-                    resolve(muzic);
-                    return;
-                }
-            }
-            reject({msg:'Can not find muzic', code:404});
-        });
-    }
-}
+    async function getmuzicDetail(req, res) {
+        let idx = req.query.idx;
+        let sql = 'select * from music where id = ?';
 
-module.exports = new Muzic();
+        const connection = await pool.getConnection(async conn => conn);
+        try {
+        [results] = await connection.query(sql, [idx]);
+
+        res.render('../views/muzicDetail', {info: results[0] });
+        } catch(e) {
+        console.error(e);
+        } finally {
+        connection.release();
+        }
+    }
+
+module.exports = {
+    getMuzicList:getMuzicList,
+    addMuzic:addMuzic,
+    updateMuzic:updateMuzic,
+    deleteMuzic:deleteMuzic,
+    getmuzicDetail:getmuzicDetail,
+    updateDetailMuzic:updateDetailMuzic
+}
