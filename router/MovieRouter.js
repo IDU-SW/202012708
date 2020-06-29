@@ -22,24 +22,31 @@ router.get('/muzicDelete', model.deleteMuzic);
 router.post('/login', handleLogin);
 router.delete('/logout',handleLogout);
 const user = {
-  id : '202012708',
-  password : '1234',
+  id : ['202012708','yhg'],
+  password : ['1234','1234'],
   name : 'yhg',
 }
 
 function handleLogin(req, res) {
   const id = req.body.id;
   const password = req.body.password;
-
-  if ( id === user.id && password === user.password ) {
-     // 로그인 성공시 : 세션에 사용자 ID 저장
-     req.session.userid = id;
-     res.sendStatus(200);
+  let userId;
+  let userPw;
+  for(let i = 0; i < user.id.length; i++){
+    if ( id == user.id[i] && password == user.password[i] ) {
+      userId = user.id[i];
+      userPw = user.password[i];
+    }
   }
-  else {
-     res.sendStatus(401);
+    if ( id == userId && password == userPw ) {
+      // 로그인 성공시 : 세션에 사용자 ID 저장
+      req.session.userid = id;
+      res.sendStatus(200);
+    }
+    else {
+      res.sendStatus(401);
+    }
   }
-}
 
 function handleLogout(req, res) {
   req.session.destroy( err => {
