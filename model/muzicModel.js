@@ -1,147 +1,136 @@
 const fs = require('fs');
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize('muzics', 'dev', 'cometrue', {
-    dialect: 'mysql', host :'127.0.0.1'
-})
+const pool = require('../lib/mySql');
+const session = require('express-session');
 
-class Music extends Sequelize.Model {}
-Music.init({
-    id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
-    },
-    title: Sequelize.STRING,
-    sinnger: Sequelize.STRING,
-    year: Sequelize.STRING
-}, {tableName: 'music', sequelize})
+class Muzic {}
 
-class Music {
-    constructor() {
-        try{
-            this.prepareTable();
-        } catch (err){
-            console.error(err);
-        }
+    // Promise 예제
+async function getMuzicList(req, res) {
+
+    let sql = 'select * from music';
+
+    const connection = await pool.getConnection(async conn => conn);
+    try {
+      [results] = await connection.query(sql);
+
+      res.render('../views/muzicList', {data: results });
+    } catch(e) {
+      console.error(e);
+    } finally {
+      connection.release();
     }
+  }
 
-    async prepareTable() {
+    async function addMuzic(req, res) {
+        let title = req.body.title;
+        let sinnger = req.body.sinnger;
+        let year = req.body.year;
+        let sql = 'insert into music (title, sinnger, year) values (?,?,?)';
+
+        const connection = await pool.getConnection(async conn => conn);
         try {
-            await MusicList.sync({force:true});
-        }catch (err){
-            console.log('musicList 준비 실패 :', err);
+        [results] = await connection.query(sql, [title, sinnger, year]);
+
+        } catch(e) {
+        console.error(e);
+        } finally {
+        connection.release();
         }
+        res.redirect('/muzics');
     }
 
-    async musicdata(music){
-        try{
-            const mret = await MusicList.create({
-                title: music.title,
-                sinnger: music.sinnger,
-                year: music.year,
-            }, {logging: false});
+    async function updateMuzic(req, res) {
+        let id = req.body.id;
+        let title = req.body.title;
+        let sinnger = req.body.sinnger;
+        let year = req.body.year;
 
-            const newData = mret.dataValues;
+        let sql = 'update music set title = ?, sinnger = ?, year = ? where id = ?';
 
-            await mret.setMusicInfo(iret);
-
-            console.log(newData);
-            console.log('Create success');
-        } catch (err) {
-            console.log('ERROR : ', err);
-        }
-    }
-
-    async getMusicList() {
-        let rtn;
-        await MusicList.findAll({include:[{model:Music}]})
-        .then( results => {
-            for (var item of results) {
-                console.log('id:', item.id, ', title:', item.title, ', sinnger:', item.sinnger, ', year:', item.year);
-            }
-            rtn = results;
-        })
-        .catch( error => {
-            console.error('Error :', error);
-        });
-        return rtn;
-    }
-
-    // 상세보기
-    async getMusicDetail(id) {
+        const connection = await pool.getConnection(async conn => conn);
         try {
-            let results = await MusicList.findAll({where: {id:id}, include:[{model:Music}]});
-            for (var item of results) {
-                console.log('id : ', item.id, ' title : ', item.title);
-            }
-            if ( results ) {
-                return results[0];
-            }
-            else {
-                console.log('no data');
-            }
-        }
-        catch (error) {
-            console.log('Error : ', error);
+            [results] = await connection.query(sql, [title, sinnger, year, id]);
+            res.render('../views/updateComplete', {data: results });
+        } catch(e) {
+            console.error(e);
+        } finally {
+            connection.release();
         }
     }
 
-    // 추가
-    async addMusic(title, sinnger, year) {
-        let newMusic = {title, sinnger, year};
-        console.log(newMusic);
+    async function updateDetailMuzic(req, res) {
+        let idx = req.query.idx;
+        let sql = 'select * from music where id = ?';
+
+        const connection = await pool.getConnection(async conn => conn);
         try {
-            const newData = await this.musicdata(newMusic);
-            console.log(newData);
-            console.log('Create success');
-            return newMusic;
-        }
-        catch (error) {
-            console.log('Error : ', error);
+        [results] = await connection.query(sql, [idx]);
+        res.render('../views/updateMuzic', {info: results[0] });
+        } catch(e) {
+        console.error(e);
+        } finally {
+        connection.release();
         }
     }
 
-    // 삭제
-    async delMusic(id) {
+    async function deleteMuzic(req, res) {
+        let idx = req.query.idx;
+        let sql = 'delete from music where id = ?';
+
+        const connection = await pool.getConnection(async conn => conn);
         try {
-            let results = await MusicList.findAll({where: {id:id}, include:[{model:Music}]});
+        [results] = await connection.query(sql, [idx]);
 
-            let result = await MusicList.destroy({where:{id:id}, include:[{model:Music}]});
-            
-            for (var item of results) {
-                console.log('Remove item id : ', item.id, ', title : ', item.title);
-            }
-            if ( results ) {
-                console.log('Remove success :', result);
-                return results[0];
-            }
-            else {
-                console.log('no data');
-            }
+
+        } catch(e) {
+        console.error(e);
+        } finally {
+        connection.release();
         }
-        catch (error) {
-            console.log('Remove Error :', error);
-        }
+        res.redirect('/muzics');
     }
-    
-    // 수정
-    async editMusic(id, title, sinnger, year) {
+
+    // Promise - Reject
+    async function getmuzicDetail(req, res) {
+        let idx = req.query.idx;
+        let sql = 'select * from music where id = ?';
+
+        const connection = await pool.getConnection(async conn => conn);
         try {
-            let music = await MusicList.findByPk(id);
-            music.title = title;
-            music.sinnger = sinnger;
-            music.year = year;
-            let ret = await music.save();
+        [results] = await connection.query(sql, [idx]);
 
-            let changedMusic = ret.dataValues;
-
-            let results = await MusicList.findAll({where: {id:id}, include:[{model:Music}]});
-            return results[0];
-        }
-        catch (error) {
-            console.log('Error :', error);
+        res.render('../views/muzicDetail', {info: results[0] });
+        } catch(e) {
+        console.error(e);
+        } finally {
+        connection.release();
         }
     }
+
+    async function login(req, res) {
+        let id = req.body.id;
+        let pw = req.body.pw;
+        let sql = 'select * from login where userid = ? and pw = ?';
+
+        const connection = await pool.getConnection(async conn => conn);
+        try {
+        [results] = await connection.query(sql, [id, pw]);
+        if(results[0]){
+            req.session.userid = id
+        }
+        } catch(e) {
+        console.error(e);
+        } finally {
+        connection.release();
+        }
+    }
+
+module.exports = {
+    getMuzicList:getMuzicList,
+    addMuzic:addMuzic,
+    updateMuzic:updateMuzic,
+    deleteMuzic:deleteMuzic,
+    getmuzicDetail:getmuzicDetail,
+    updateDetailMuzic:updateDetailMuzic,
+    login:login
 }
-
-module.exports = new Music();
