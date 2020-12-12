@@ -1,0 +1,233 @@
+@charset "utf-8";
+
+@import url('https://cdn.rawgit.com/innks/NanumSquareRound/master/nanumsquareround.min.css');
+
+/* Type Selector Reset */
+html {
+    background: #397fb3;
+    background: -webkit-linear-gradient(left, #139dba , #48d392);
+    background: -o-linear-gradient(right, #139dba, #48d392);
+    background: -moz-linear-gradient(right, #139dba, #48d392);
+    background: linear-gradient(to right, #139dba , #48d392);
+    font-family: 'NanumSquareRound',sans-serif;
+}
+
+html, body, div, input, p, button {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+    height: 100%;
+}
+
+h1 {
+    font-size: 48px;
+}
+
+h2 {
+    font-size:25px;
+}
+
+.use {
+    line-height: 25px;
+    font-size: 19px;
+}
+
+#root,
+.container,
+body,
+html {
+    height: 100%;
+}
+
+.Main {
+    justify-content: space-around;
+    flex-wrap: wrap;
+    overflow: auto;
+    display: flex;
+    height: 100%;
+}
+
+/* Loding */
+.loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    font-weight: 300;
+}
+
+/* Calculator */
+.calculator-area {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    height: 100%;
+    width: 600px;
+}
+
+.result {
+    margin-top: 90px;
+    width: 100%;
+    height: 90px;
+}
+
+.calculator-body {
+    width: 350px;
+    height: 600px;
+    border: 1px solid black;
+    box-shadow: 4px 4px 16px #2e2e2e;
+    border-radius: 20px;
+    background-color: rgb(246, 253, 251);
+}
+
+.result p {
+    overflow: hidden;
+    white-space: nowrap;
+    height: 100%;
+    width: 100%;
+    color: rgb(56, 62, 70);
+    text-overflow: ellipsis;
+    text-align: right;
+    font-size: 50px;
+}
+
+.button-area {
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    display: flex;
+    padding: 10px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    background-color: white;
+}
+
+button {
+    margin: 10px;
+    height: 60px;
+    width: 60px;
+    border: none;
+    border-radius: 50px;
+    outline: none;
+    background-color: #00ff0000;
+    font-size: 25px;
+    font-weight: bold;
+    color: rgb(56, 62, 70);
+}
+
+button:hover {
+    box-shadow: 0.1px 0.1px 2px #2e2e2e;
+}
+
+button:active {
+    box-shadow: none;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.symbol {
+    background-color: rgb(246, 253, 251);
+}
+
+#same {
+    background-color: #48d392;
+    color: white;
+}
+
+/* Darkmode switch */
+.switch {
+    display: inline-block;
+    position: relative;
+    margin: 10px;
+    float: right;
+    height: 22px;
+    width: 40px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 0;
+    background-color: rgb(228, 228, 228);
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border: 1px solid rgba(134, 134, 134, 0.2);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    bottom: 0.01px;
+    background-color: white;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+}
+
+input:checked + .slider {
+    background-color: #48d392;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #48d392;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(18px);
+    -ms-transform: translateX(18px);
+    transform: translateX(18px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* Darkmode */
+.calculator-body[data-theme="dark"] {
+    background-color: rgb(35, 43, 63);
+}
+.calculator-body[data-theme="dark"] .button-area {
+    background-color: rgb(48, 57, 79);
+}
+
+.calculator-body[data-theme="dark"] button{
+    color: rgb(153, 167, 160);
+}
+
+.calculator-body[data-theme="dark"] .symbol{
+    background-color: rgb(35, 43, 63);
+    color: #48d392;
+}
+
+.calculator-body[data-theme="dark"] #same{
+    color: rgb(35, 43, 63);
+}
+
+.calculator-body[data-theme="dark"] p {
+    color: #48d392;
+}
+
+/* Explanation */
+.explanation-body {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    height: 100%;
+    width: 600px;
+}
